@@ -1,0 +1,16 @@
+---
+kubernetes:
+  children:
+    master:
+      hosts:
+        barkieth:
+          ansible_user: ajennex
+          ansible_host: 192.168.30.167
+    worker:
+      hosts:
+        donnanger:
+          ansible_user: ajennex
+          ansible_host: 192.168.30.168
+        hammruabi:
+          ansible_user: ajennex
+          ansible_host: 192.168.30.169
