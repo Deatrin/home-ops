@@ -8,12 +8,14 @@ spec:
   interval: 30m
   ref:
     branch: main
-  url: "https://github.com/Deatrin/home-ops.git"
+  url: "ssh://git@github.com/Deatrin/home-ops.git"
   ignore: |
     # exclude all
     /*
     # include kubernetes directory
     !/kubernetes
+  secretRef:
+    name: github-deploy-key
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
