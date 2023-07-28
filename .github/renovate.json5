@@ -19,7 +19,7 @@
   "dependencyDashboardTitle": "Renovate Dashboard 🤖",
   "suppressNotifications": ["prIgnoreNotification"],
   "rebaseWhen": "conflicted",
-  "schedule": ["on saturday"],
+  "schedule": ["before 4am"],
   "flux": {
     "fileMatch": [
       "(^|/)ansible/.+\\.ya?ml(\\.j2)?$",
