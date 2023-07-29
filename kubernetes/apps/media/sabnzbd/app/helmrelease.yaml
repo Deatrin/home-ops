@@ -74,7 +74,7 @@ spec:
     ingress:
       main:
         enabled: true
-        ingressClassName: internal
+        ingressClassName: nginx
         annotations:
           hajimari.io/icon: mdi:download
           # nginx.ingress.kubernetes.io/configuration-snippet: |
