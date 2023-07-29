@@ -30,8 +30,8 @@ spec:
       replicas: 2
       strategy: RollingUpdate
     image:
-      repository: ghcr.io/onedr0p/kubernetes-schemas
-      tag: latest@sha256:9c4bbc009e9040be37042f0c62b240293b9f3cee90f03bbec55f574840ec3c83
+      repository: ghcr.io/Deatrin/kubernetes-schemas
+      tag: latest@sha256:f9bdf3c4ff3508a82b1db9c7e1715fb4381b8a002a034df70f92f24d78d91168
     service:
       main:
         ports:
@@ -40,11 +40,11 @@ spec:
     ingress:
       main:
         enabled: true
-        ingressClassName: external
+        ingressClassName: nginx
         annotations:
-          external-dns.alpha.kubernetes.io/target: external.devbu.io
+          external-dns.alpha.kubernetes.io/target: ingress.jennex.io
         hosts:
-          - host: &host "{{ .Release.Name }}.devbu.io"
+          - host: &host "{{ .Release.Name }}.jennex.io"
             paths:
               - path: /
                 pathType: Prefix
