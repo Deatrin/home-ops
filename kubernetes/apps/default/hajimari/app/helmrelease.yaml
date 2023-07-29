@@ -43,7 +43,9 @@ spec:
       namespaceSelector:
         matchNames:
           - default
+          - flux-system
           - monitoring
+          - media
     ingress:
       main:
         enabled: true
