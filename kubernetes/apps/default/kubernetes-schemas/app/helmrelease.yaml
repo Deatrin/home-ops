@@ -30,7 +30,7 @@ spec:
       replicas: 2
       strategy: RollingUpdate
     image:
-      repository: ghcr.io/Deatrin/kubernetes-schemas
+      repository: ghcr.io/deatrin/kubernetes-schemas
       tag: latest@sha256:f9bdf3c4ff3508a82b1db9c7e1715fb4381b8a002a034df70f92f24d78d91168
     service:
       main:
