@@ -53,7 +53,7 @@ spec:
       REDIS_PUB_SUB_ENABLED: "true"
       REDIS_SENTINEL_SERVICE: redis-master
       REDIS_SERVERS: redis-node-0.redis-headless.database.svc.cluster.local:26379,redis-node-1.redis-headless.database.svc.cluster.local:26379,redis-node-2.redis-headless.database.svc.cluster.local:26379
-      TIMEZONE: America/New_York
+      TIMEZONE: America/Los_Angelees
     envFrom: *envFrom
     service:
       main:
@@ -78,9 +78,9 @@ spec:
     ingress:
       main:
         enabled: true
-        ingressClassName: external
+        ingressClassName: nginx
         annotations:
-          external-dns.alpha.kubernetes.io/target: external.devbu.io
+          external-dns.alpha.kubernetes.io/target: ingress.jennex.io
         hosts:
           - host: *host
             paths:

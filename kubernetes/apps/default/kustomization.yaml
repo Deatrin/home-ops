@@ -5,4 +5,5 @@ resources:
   - ./hajimari/ks.yaml
   - ./kubernetes-schemas/ks.yaml
   - ./namespace.yaml
+  - ./shlink/ks.yaml
   - ./theme-park/ks.yaml
