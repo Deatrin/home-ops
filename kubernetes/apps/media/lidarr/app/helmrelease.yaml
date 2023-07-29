@@ -59,10 +59,10 @@ spec:
         ingressClassName: nginx
         annotations:
           hajimari.io/icon: mdi:headphones
-          # nginx.ingress.kubernetes.io/configuration-snippet: |
-          #   proxy_set_header Accept-Encoding "";
-          #   sub_filter '</head>' '<link rel="stylesheet" type="text/css" href="https://theme-park.devbu.io/css/base/lidarr/nord.css"></head>';
-          #   sub_filter_once on;
+          nginx.ingress.kubernetes.io/configuration-snippet: |
+            proxy_set_header Accept-Encoding "";
+            sub_filter '</head>' '<link rel="stylesheet" type="text/css" href="https://theme-park.jennex.io/css/base/lidarr/dracula.css"></head>';
+            sub_filter_once on;
         hosts:
           - host: &host "{{ .Release.Name }}.jennex.io"
             paths:
