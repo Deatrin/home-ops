@@ -31,31 +31,21 @@ spec:
   values:
     env:
       TZ: "${TIMEZONE}"
-    api:
-      containers:
-        args:
-          - --enable-insecure-login=true
-          - --enable-skip-login=true
-          - --disable-settings-authorizer=true
-    app:
-      ingress:
-        enabled: true
-        className: nginx
-        annotations:
-          hajimari.io/icon: mdi:kubernetes
-        hosts:
-          - &host "kubernetes.${SECRET_DOMAIN}"
-        tls:
-          - hosts:
-              - *host
-            secretName: kubernetes-dashboard-tls
+    extraargs:
+      - --enable-insecure-login=true
+      - --enable-skip-login=true
+      - --disable-settings-authorizer=true
+    ingress:
+      enabled: true
+      className: nginx
+      annotations:
+        hajimari.io/icon: mdi:kubernetes
+      hosts:
+        - &host "kubernetes.${SECRET_DOMAIN}"
+      tls:
+        - hosts:
+            - *host
+          secretName: kubernetes-dashboard-tls
     metricsScraper:
       enabled: true
-    serviceMonitor:
-      enabled: false
-    cert-manager:
-      enabled: false
-    nginx:
-      enabled: false
-    metrics-server:
-      enabled: false
+
