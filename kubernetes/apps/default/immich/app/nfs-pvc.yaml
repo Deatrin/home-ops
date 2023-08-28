@@ -18,8 +18,8 @@ spec:
   accessModes: ["ReadWriteMany"]
   persistentVolumeReclaimPolicy: Retain
   nfs:
-    server: expanse.turbo.ac
-    path: /eros/Apps/Immich
+    server: ${NAS_ADDR}
+    path: /volume1/kubedata/PersistentVolumeClaims/Immich
   mountOptions:
     - nfsvers=4.2
     - nconnect=8
