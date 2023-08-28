@@ -21,8 +21,6 @@ spec:
     server: 192.168.2.147
     path: /volume1/kubedata/PersistentVolumeClaims/Immich
   mountOptions:
-    - nfsvers=4.2
-    - nconnect=8
     - hard
     - noatime
     - rsize=131072
