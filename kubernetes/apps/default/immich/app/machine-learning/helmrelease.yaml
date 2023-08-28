@@ -32,7 +32,6 @@ spec:
       namespace: database
   values:
     controller:
-      replicas: 1
       strategy: RollingUpdate
       annotations:
         configmap.reloader.stakater.com/reload: &configMap immich-configmap
@@ -50,6 +49,11 @@ spec:
         ports:
           http:
             port: 3003
+    podSecurityContext:
+      runAsUser: 568
+      runAsGroup: 568
+      fsGroup: 568
+      fsGroupChangePolicy: OnRootMismatch
     persistence:
       library:
         enabled: true
@@ -58,6 +62,14 @@ spec:
       cache:
         enabled: true
         type: emptyDir
+      geocoding-dump:
+        enabled: true
+        type: emptyDir
+        mountPath: /usr/src/app/.reverse-geocoding-dump
+      transformers-cache:
+        enabled: true
+        type: emptyDir
+        mountPath: /usr/src/app/.transformers_cache
     topologySpreadConstraints:
       - maxSkew: 1
         topologyKey: kubernetes.io/hostname

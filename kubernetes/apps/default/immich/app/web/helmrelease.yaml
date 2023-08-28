@@ -32,7 +32,6 @@ spec:
       namespace: database
   values:
     controller:
-      replicas: 2
       strategy: RollingUpdate
       annotations:
         configmap.reloader.stakater.com/reload: &configMap immich-configmap
@@ -73,6 +72,11 @@ spec:
         tls:
           - hosts:
               - *host
+    podSecurityContext:
+      runAsUser: 568
+      runAsGroup: 568
+      fsGroup: 568
+      fsGroupChangePolicy: OnRootMismatch
     persistence:
       library:
         enabled: true

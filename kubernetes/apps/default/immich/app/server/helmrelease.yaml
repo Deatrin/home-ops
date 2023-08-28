@@ -33,7 +33,7 @@ spec:
   values:
     initContainers:
       01-init-db:
-        image: ghcr.io/onedr0p/postgres-init:14.9
+        image: ghcr.io/onedr0p/postgres-init:14.8
         imagePullPolicy: IfNotPresent
         envFrom: &envFrom
           - configMapRef:
@@ -41,7 +41,6 @@ spec:
           - secretRef:
               name: &secret immich-secret
     controller:
-      replicas: 2
       strategy: RollingUpdate
       annotations:
         configmap.reloader.stakater.com/reload: *configMap
@@ -56,11 +55,24 @@ spec:
         ports:
           http:
             port: 3001
+    podSecurityContext:
+      runAsUser: 568
+      runAsGroup: 568
+      fsGroup: 568
+      fsGroupChangePolicy: OnRootMismatch
     persistence:
       library:
         enabled: true
         existingClaim: immich-nfs
         mountPath: /usr/src/app/upload
+      geocoding-dump:
+        enabled: true
+        type: emptyDir
+        mountPath: /usr/src/app/.reverse-geocoding-dump
+      transformers-cache:
+        enabled: true
+        type: emptyDir
+        mountPath: /usr/src/app/.transformers_cache
     topologySpreadConstraints:
       - maxSkew: 1
         topologyKey: kubernetes.io/hostname
