@@ -61,7 +61,7 @@ spec:
           nignx.ingress.kubernetes.io/force-ssl-redirect: "true"
           nginx.ingress.kubernetes.io/proxy-body-size: "0"
         hosts:
-          - host: &host photos.devbu.io
+          - host: &host photos.jennex.io
             paths:
               - path: /
                 pathType: Prefix
