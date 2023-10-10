@@ -127,6 +127,6 @@ spec:
         type: secret
         name: cloudflared-secret
         globalMounts:
-          - path: /etc/cloudflared/config/config.yaml
+          - path: /etc/cloudflared/config/credentials.yaml
             subPath: config.yaml
             readOnly: true
