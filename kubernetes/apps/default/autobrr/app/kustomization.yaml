@@ -1,15 +1,17 @@
 ---
-# yaml-language-server: $schema=https://json.schemastore.org/kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: default
 resources:
-  - ./externalsecret.yaml
   - ./helmrelease.yaml
-  - ./gatus.yaml
+  - ./externalsecret.yaml
+  - ./postgresCluster.yaml
 configMapGenerator:
   - name: autobrr-configmap
     files:
-      - config.toml=./config/config.toml
+      - ./config/config.toml
 generatorOptions:
   disableNameSuffixHash: true
+commonLabels:
+  app.kubernetes.io/name: autobrr
+  app.kubernetes.io/instance: autobrr
