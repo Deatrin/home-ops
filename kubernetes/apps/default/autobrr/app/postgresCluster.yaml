@@ -6,21 +6,21 @@ metadata:
   namespace: default
 spec:
   postgresVersion: 15
-  dataSource:
-    pgbackrest:
-      stanza: db
-      configuration:
-        - secret:
-            name: pgo-s3-creds
-      global:
-        repo1-path: /autobrr/repo1
-        repo1-s3-uri-style: path
-      repo:
-        name: repo1
-        s3:
-          bucket: "crunchy-postgres"
-          endpoint: "192.168.30.166:9000"
-          region: "us-east-1"
+  # dataSource:
+  #   pgbackrest:
+  #     stanza: db
+  #     configuration:
+  #       - secret:
+  #           name: pgo-s3-creds
+  #     global:
+  #       repo1-path: /autobrr/repo1
+  #       repo1-s3-uri-style: path
+  #     repo:
+  #       name: repo1
+  #       s3:
+  #         bucket: "crunchy-postgres"
+  #         endpoint: "192.168.30.166:9000"
+  #         region: "us-east-1"
   patroni:
     dynamicConfiguration:
       synchronous_mode: true
