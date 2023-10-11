@@ -46,6 +46,7 @@ spec:
           - flux-system
           - monitoring
           - media
+          - selfhosted
     ingress:
       main:
         enabled: true
