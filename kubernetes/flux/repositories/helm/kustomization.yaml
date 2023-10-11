@@ -8,6 +8,7 @@ resources:
   - ./cilium.yaml
   - ./cloudnative-pg.yaml
   - ./coredns.yaml
+  - ./crunchydata.yaml
   - ./csi-driver-nfs.yaml
   - ./descheduler.yaml
   - ./external-dns.yaml
