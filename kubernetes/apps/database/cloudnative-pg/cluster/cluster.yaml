@@ -9,7 +9,7 @@ metadata:
     kyverno.io/ignore: "true"
 spec:
   instances: 3
-  imageName: ghcr.io/cloudnative-pg/postgresql:16.1-4
+  imageName: ghcr.io/cloudnative-pg/postgresql:14.8-8
   inheritedMetadata:
     labels:
       kube-image-keeper.enix.io/image-caching-policy: ignore
@@ -21,7 +21,7 @@ spec:
     name: cloudnative-pg-secret
   bootstrap:
     recovery:
-      source: &previousCluster postgres-v3
+      source: &previousCluster postgres-v2
   postgresql:
     parameters:
       max_connections: "600"
@@ -36,7 +36,7 @@ spec:
         maxParallel: 8
       destinationPath: s3://postgresql/
       endpointURL: "${S3_INTERNAL_ENDPOINT}"
-      serverName: &currentCluster postgres-v4
+      serverName: &currentCluster postgres-v3
       s3Credentials:
         accessKeyId:
           name: cloudnative-pg-secret
