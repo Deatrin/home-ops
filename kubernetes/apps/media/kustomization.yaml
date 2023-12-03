@@ -6,6 +6,6 @@ resources:
   - ./lidarr/ks.yaml
   - _pvc
   - ./prowlarr/ks.yaml
-  # - ./radarr/ks.yaml
+  - ./radarr/ks.yaml
   - ./sabnzbd/ks.yaml
   - ./sonarr/ks.yaml
