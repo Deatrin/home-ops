@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 2.0.3
+      version: 2.3.0
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -34,45 +34,30 @@ spec:
   values:
     controllers:
       main:
-        type: statefulset
         annotations:
           reloader.stakater.com/auto: "true"
-        statefulset:
-          volumeClaimTemplates:
-            - name: config
-              accessMode: ReadWriteOnce
-              size: 10Gi
-              storageClass: nfs-client-pvc
-              globalMounts:
-                - path: /config
-        pod:
-          securityContext:
-            runAsUser: 568
-            runAsGroup: 568
-            fsGroup: 568
-            fsGroupChangePolicy: OnRootMismatch
-            supplementalGroups: 
-              - 65539
+        initContainers:
+          init-db:
+            image:
+              repository: ghcr.io/onedr0p.postgres-init
+              tag: 15
+              pullPolicy: IfNotPresent
+            envFrom: &envFrom
+              - secretRef:
+                name: sonarr-secret
         containers:
           main:
             image:
               repository: ghcr.io/onedr0p/sonarr-develop
               tag: 4.0.0.733@sha256:820dcce58696fa45049ad1c3afff1ae695644f67cbab87911670e6e4303da796
             env:
+              COMPlus_EnableDiagnostics: "0"
               TZ: America/Los_Angeles
               PUSHOVER_DEBUG: "false"
               SONARR__INSTANCE_NAME: Sonarr
               SONARR__PORT: &port 80
               SONARR__LOG_LEVEL: info
-            envFrom:
-              - secretRef:
-                  name: sonarr-secret
-            resources:
-              requests:
-                cpu: 10m
-                memory: 250Mi
-              limits:
-                memory: 2000Mi
+            envFrom: *envFrom
             probes:
               liveness: &probes
                 enabled: true
@@ -88,6 +73,24 @@ spec:
               readiness: *probes
               startup:
                 enabled: false
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFileSystem: true
+              capabilities: { drop: ["ALL"] }
+            resources:
+              requests:
+                cpu: 10m
+                memory: 256M
+              limits:
+                memory: 1Gi
+        pod:
+          securityContext:
+            runAsUser: 568
+            runAsGroup: 568
+            runAsNonRoot: true
+            fsGroup: 568
+            fsGroupChangePolicy: OnRootMisMatch
+            supllementalGroups: [10000]
 
     service:
       main:
@@ -118,18 +121,20 @@ spec:
 
 
     persistence:
+      config:
+        enabled: true
+        existingClaim: sonarr-config
       media:
         enabled: true
         existingClaim: media-nfs
         globalMounts:
           - path: /media
-      scripts:
-        enabled: true
+      pushover-notify:
         type: configMap
         name: sonarr-configmap
+        defaultMode: 0775
         globalMounts:
           - path: /scripts/pushover-notify.sh
             subPath: pushover-notify.sh
-            defaultMode: 0775
             readOnly: true
 
