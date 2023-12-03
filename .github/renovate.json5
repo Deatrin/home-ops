@@ -32,7 +32,7 @@
     "labels": ["security"],
     "automerge": true,
     "automergeType": "branch",
-    "schedule": ["at any time"]
+    "schedule": ["before 4am"]
   },
   "osvVulnerabilityAlerts": true,
   "dependencyDashboardOSVVulnerabilitySummary": "all",
