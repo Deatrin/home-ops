@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 1.5.1
+      version: 2.3.0
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -31,95 +31,106 @@ spec:
   #   - name: volsync
   #     namespace: volsync
   values:
-    initContainers:
-      01-init-db:
-        image: ghcr.io/onedr0p/postgres-init:15.5
-        imagePullPolicy: IfNotPresent
-        envFrom: &envFrom
-          - secretRef:
-              name: radarr-secret
-    controller:
-      type: statefulset
-      annotations:
-        reloader.stakater.com/auto: "true"
-    image:
-      repository: ghcr.io/onedr0p/radarr-develop
-      tag: 5.2.3.8303@sha256:7a759f7c28393af8edd20aa47572dd9c75003c53f34f86bbacb3ab43f0b45996
-    env:
-      TZ: America/Los_Angeles
-      PUSHOVER_DEBUG: "false"
-      PUSHOVER_APP_URL: &host "{{ .Release.Name }}.jennex.io"
-      RADARR__INSTANCE_NAME: Radarr
-      RADARR__PORT: &port 80
-      RADARR__APPLICATION_URL: "https://{{ .Release.Name }}.jennex.io"
-      RADARR__LOG_LEVEL: info
-    envFrom: *envFrom
+    controllers:
+      main:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        initContainers:
+          init-db:
+            image: 
+              repository: ghcr.io/onedr0p/postgres-init
+              tag: 15
+              pullPolicy: IfNotPresent
+            envFrom: &envFrom
+              - secretRef:
+                  name: radarr-secret
+        containers:
+          main:
+            image:
+              repository: ghcr.io/onedr0p/radarr-develop
+              tag: 5.2.3.8303@sha256:7a759f7c28393af8edd20aa47572dd9c75003c53f34f86bbacb3ab43f0b45996
+            env:
+              COMPlus_EnableDiagnostics: "0"
+              TZ: America/Los_Angeles
+              PUSHOVER_DEBUG: "false"
+              PUSHOVER_APP_URL: &host "{{ .Release.Name }}.jennex.io"
+              RADARR__INSTANCE_NAME: Radarr
+              RADARR__PORT: &port 80
+              RADARR__APPLICATION_URL: "https://{{ .Release.Name }}.jennex.io"
+              RADARR__LOG_LEVEL: info
+            envFrom: *envFrom
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /ping
+                    port: *port
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+              startup:
+                enabled: false
+            securityContext:
+              allowPrivilgeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+            resources:
+              requests:
+                cpu: 10m
+                memory: 256M
+              limits:
+                memory: 1Gi
+        pod:
+          securityContext:
+            runAsUser: 568
+            runAsGroup: 568
+            runAsNonRoot: true
+            fsGroup: 568
+            fsGroupChangePolicy: OnRootMismatch
+            supplementalGroups: [10000]
     service:
       main:
         ports:
           http:
             port: *port
-    probes:
-      liveness: &probes
-        enabled: true
-        custom: true
-        spec:
-          httpGet:
-            path: /ping
-            port: *port
-          initialDelaySeconds: 0
-          periodSeconds: 10
-          timeoutSeconds: 1
-          failureThreshold: 3
-      readiness: *probes
-      startup:
-        enabled: false
-    ingress:
-      main:
-        enabled: true
-        ingressClassName: nginx
-        annotations:
-          hajimari.io/icon: mdi:movie-search
-          nginx.ingress.kubernetes.io/configuration-snippet: |
-            proxy_set_header Accept-Encoding "";
-            sub_filter '</head>' '<link rel="stylesheet" type="text/css" href="https://theme-park.jennex.io/css/base/radarr/dracula.css"></head>';
-            sub_filter_once on;
-        hosts:
-          - host: *host
-            paths:
-              - path: /
-                pathType: Prefix
-        tls:
-          - hosts:
-              - *host
-    podSecurityContext:
-      runAsUser: 568
-      runAsGroup: 568
-      fsGroup: 568
-      fsGroupChangePolicy: OnRootMismatch
-      supplementalGroups: [10000]
-    volumeClaimTemplates:
-      - name: config
-        mountPath: /config
-        accessMode: ReadWriteOnce
-        size: 15Gi
-        storageClass: nfs-client-pvc
-    persistence:
-      media:
-        enabled: true
-        existingClaim: media-nfs
-        mountPath: /media
-      scripts:
-        enabled: true
-        type: configMap
-        name: radarr-configmap
-        subPath: pushover-notify.sh
-        mountPath: /scripts/pushover-notify.sh
-        defaultMode: 0775
-        readOnly: true
-    resources:
-      requests:
-        cpu: 10m
-        memory: 250Mi
-      limits:
-        memory: 2000Mi
+      ingress:
+        main:
+          enabled: true
+          ClassName: nginx
+          annotations:
+            hajimari.io/icon: mdi:movie-search
+            nginx.ingress.kubernetes.io/configuration-snippet: |
+              proxy_set_header Accept-Encoding "";
+              sub_filter '</head>' '<link rel="stylesheet" type="text/css" href="https://theme-park.jennex.io/css/base/radarr/dracula.css"></head>';
+              sub_filter_once on;
+          hosts:
+            - host: *host
+              paths:
+                - path: /
+                  service:
+                    name: main
+                    port: http
+          tls:
+            - hosts:
+                - *host
+      persistence:
+        config:
+          enabled: true
+          existingClaim: radarr-config
+        media:
+          enabled: true
+          existingClaim: media-nfs
+          globalMounts:
+            - path: /media
+        pushover-notify:
+          type: configMap
+          name: radarr-configmap
+          defaultMode: 0775
+          globalMounts:
+            - path: /scripts/pushover-notify.sh
+              subPath: pushover-notify.sh
+              readOnly: true
