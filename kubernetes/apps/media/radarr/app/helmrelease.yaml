@@ -97,26 +97,26 @@ spec:
         ports:
           http:
             port: *port
-      ingress:
-        main:
-          enabled: true
-          ClassName: nginx
-          annotations:
-            hajimari.io/icon: mdi:movie-search
-            nginx.ingress.kubernetes.io/configuration-snippet: |
-              proxy_set_header Accept-Encoding "";
-              sub_filter '</head>' '<link rel="stylesheet" type="text/css" href="https://theme-park.jennex.io/css/base/radarr/dracula.css"></head>';
-              sub_filter_once on;
-          hosts:
-            - host: *host
-              paths:
-                - path: /
-                  service:
-                    name: main
-                    port: http
-          tls:
-            - hosts:
-                - *host
+    ingress:
+      main:
+        enabled: true
+        ClassName: nginx
+        annotations:
+          hajimari.io/icon: mdi:movie-search
+          nginx.ingress.kubernetes.io/configuration-snippet: |
+            proxy_set_header Accept-Encoding "";
+            sub_filter '</head>' '<link rel="stylesheet" type="text/css" href="https://theme-park.jennex.io/css/base/radarr/dracula.css"></head>';
+            sub_filter_once on;
+        hosts:
+          - host: *host
+            paths:
+              - path: /
+                service:
+                  name: main
+                  port: http
+        tls:
+          - hosts:
+              - *host
       persistence:
         config:
           enabled: true
