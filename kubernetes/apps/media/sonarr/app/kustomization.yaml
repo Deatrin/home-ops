@@ -5,10 +5,11 @@ kind: Kustomization
 namespace: media
 resources:
   - ./externalsecret.yaml
+  - ./pvc.yaml
   - ./helmrelease.yaml
   # - ./volsync.yaml
   - ./gatus.yaml
-  - ./pvc.yaml
+
 configMapGenerator:
   - name: sonarr-configmap
     files:
