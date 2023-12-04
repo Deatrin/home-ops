@@ -124,6 +124,10 @@ spec:
       config:
         enabled: true
         existingClaim: sonarr-config
+        advancedMounts:
+          main:
+            main:
+              - path: /config
       media:
         enabled: true
         existingClaim: media-nfs
